@@ -1,1 +1,1 @@
-I'm creating a prototype for a National Park Simulation game.
+I'm creating a prototype for a National Park Simulation game. Using ChatGPT 3.5 to build the basics. 
