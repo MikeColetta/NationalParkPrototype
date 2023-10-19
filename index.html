@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Park Simulator Game</title>
+    <title>National Park Simulator Game</title>
     <style>
         #messageBox {
             height: 100px;
@@ -15,18 +15,20 @@
 </head>
 
 <body>
-    <h1>Park Simulator Game</h1>
+    <h1>National Park Simulator Game</h1>
     <p>Total Money: $<span id="totalMoney">1000</span></p>
     <p>Net Income: $<span id="netIncome">0</span></p>
     <p>Guests in Park: <span id="guestCount">200</span></p>
     <p>Upkeep Cost: $<span id="upkeepCost">50</span></p>
     <p>Trails in Park: <span id="trailCount">0</span></p>
     <p>Restrooms in Park: <span id="restroomCount">1</span></p>
+    <p>Wildlife Restorations: <span id="wildlifeCount">0</span></p>
     <p>Ticket Price: $<span id="ticketPrice">10</span></p>
     <p>Guest Happiness: <span id="guestHappiness">100</span></p>
     <div id="messageBox"></div>
     <button id="buildTrailButton">Build a Trail</button>
     <button id="buildRestroomButton">Build a Restroom</button>
+    <button id="buildWildlifeButton">Wildlife Restoration</button>
     <button id="increaseTicketPriceButton">Increase Ticket Price</button>
     <button id="decreaseTicketPriceButton">Decrease Ticket Price</button>
 
@@ -38,7 +40,8 @@
         let guestCount = 200;
         let upkeepCost = 50;
         let trailCount = 0;
-        let restroomCount = 1; // Start with one restroom
+        let restroomCount = 1;
+        let wildlifeCount = 0;
         let guestHappiness = 100;
 
         // Messages array
@@ -64,6 +67,7 @@
             document.getElementById("upkeepCost").textContent = upkeepCost;
             document.getElementById("trailCount").textContent = trailCount;
             document.getElementById("restroomCount").textContent = restroomCount;
+            document.getElementById("wildlifeCount").textContent = wildlifeCount;
             document.getElementById("ticketPrice").textContent = ticketPrice;
             document.getElementById("guestHappiness").textContent = guestHappiness;
         }
@@ -74,10 +78,10 @@
             if (totalMoney >= trailCost) {
                 totalMoney -= trailCost;
                 netIncome -= trailCost;
-                guestCount += 50; // Increase guest count when a trail is built
-                upkeepCost += 25; // Increase upkeep cost with each trail
-                trailCount++; // Increment trail count
-                guestHappiness += 10; // Increase guest happiness when a trail is built
+                guestCount += 50;
+                upkeepCost += 25;
+                trailCount++;
+                guestHappiness += 10;
                 addMessage("You built a new trail!");
             } else {
                 addMessage("Not enough money to build a trail.");
@@ -91,10 +95,26 @@
             if (totalMoney >= restroomCost) {
                 totalMoney -= restroomCost;
                 netIncome -= restroomCost;
-                restroomCount++; // Increment restroom count
+                restroomCount++;
                 addMessage("You built a new restroom!");
             } else {
                 addMessage("Not enough money to build a restroom.");
+            }
+            updateDisplay();
+        }
+
+        // Function to build a new wildlife restoration
+        function buildWildlife() {
+            const wildlifeCost = 2500;
+            if (totalMoney >= wildlifeCost) {
+                totalMoney -= wildlifeCost;
+                netIncome -= wildlifeCost;
+                guestHappiness += 20;
+                upkeepCost += 100;
+                wildlifeCount++;
+                addMessage("You restored wildlife in the park!");
+            } else {
+                addMessage("Not enough money to restore wildlife.");
             }
             updateDisplay();
         }
@@ -122,30 +142,24 @@
             totalMoney += netIncome - upkeepCost;
             netIncome = -upkeepCost;
 
-            // Simulate guest income based on guest count
             const guestIncome = guestCount * ticketPrice;
             totalMoney += guestIncome;
             netIncome += guestIncome;
 
-            // Decrease guest happiness over time with no new trails
             if (trailCount === 0) {
                 guestHappiness -= 5;
             }
 
-            // Ensure guest happiness stays within a range of 0 to 100
             guestHappiness = Math.min(100, Math.max(0, guestHappiness));
 
-            // Decrease guest count if guest happiness is below 70
             if (guestHappiness < 70) {
                 guestCount -= 5;
             }
 
-            // Check if there are enough restrooms for guests
             const requiredRestrooms = Math.ceil(guestCount / 100);
             if (restroomCount < requiredRestrooms) {
                 guestHappiness -= 10;
             } else {
-                // If there are enough restrooms, stop decreasing guest happiness
                 guestHappiness = Math.min(100, guestHappiness + 10);
             }
 
@@ -155,6 +169,7 @@
         // Event listeners for the buttons
         document.getElementById("buildTrailButton").addEventListener("click", buildTrail);
         document.getElementById("buildRestroomButton").addEventListener("click", buildRestroom);
+        document.getElementById("buildWildlifeButton").addEventListener("click", buildWildlife);
         document.getElementById("increaseTicketPriceButton").addEventListener("click", increaseTicketPrice);
         document.getElementById("decreaseTicketPriceButton").addEventListener("click", decreaseTicketPrice);
 
