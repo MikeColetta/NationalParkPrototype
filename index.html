@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Park Simulator Game</title>
+    <style>
+        #messageBox {
+            height: 100px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Park Simulator Game</h1>
+    <p>Total Money: $<span id="totalMoney">1000</span></p>
+    <p>Net Income: $<span id="netIncome">0</span></p>
+    <p>Guests in Park: <span id="guestCount">200</span></p>
+    <p>Upkeep Cost: $<span id="upkeepCost">50</span></p>
+    <p>Rides in Park: <span id="rideCount">0</span></p>
+    <p>Ticket Price: $<span id="ticketPrice">10</span></p>
+    <div id="messageBox"></div>
+    <button id="buildRideButton">Build a Ride</button>
+    <button id="increaseTicketPriceButton">Increase Ticket Price</button>
+    <button id="decreaseTicketPriceButton">Decrease Ticket Price</button>
+
+    <script>
+        // Initial variables
+        let totalMoney = 1000;
+        let netIncome = 0;
+        let ticketPrice = 10;
+        let guestCount = 200;
+        let upkeepCost = 50;
+        let rideCount = 0;
+
+        // Messages array
+        const messages = [];
+
+        // Function to add a message to the messages section
+        function addMessage(message) {
+            messages.push(message);
+            if (messages.length > 10) {
+                messages.shift();
+            }
+
+            const messageBox = document.getElementById("messageBox");
+            messageBox.innerHTML = messages.join("<br>");
+            messageBox.scrollTop = messageBox.scrollHeight;
+        }
+
+        // Function to update the display
+        function updateDisplay() {
+            document.getElementById("totalMoney").textContent = totalMoney;
+            document.getElementById("netIncome").textContent = netIncome;
+            document.getElementById("guestCount").textContent = guestCount;
+            document.getElementById("upkeepCost").textContent = upkeepCost;
+            document.getElementById("rideCount").textContent = rideCount;
+            document.getElementById("ticketPrice").textContent = ticketPrice;
+        }
+
+        // Function to build a new ride
+        function buildRide() {
+            const rideCost = 500;
+            if (totalMoney >= rideCost) {
+                totalMoney -= rideCost;
+                netIncome -= rideCost;
+                guestCount += 50; // Increase guest count when a ride is built
+                upkeepCost += 25; // Increase upkeep cost with each ride
+                rideCount++; // Increment ride count
+                addMessage("You built a new ride!");
+            } else {
+                addMessage("Not enough money to build a ride.");
+            }
+            updateDisplay();
+        }
+
+        // Function to increase the ticket price
+        function increaseTicketPrice() {
+            const priceIncrease = 2;
+            ticketPrice += priceIncrease;
+            netIncome += priceIncrease;
+            addMessage("You increased the ticket price!");
+            updateDisplay();
+        }
+
+        // Function to decrease the ticket price
+        function decreaseTicketPrice() {
+            const priceDecrease = 2;
+            ticketPrice -= priceDecrease;
+            netIncome -= priceDecrease;
+            addMessage("You decreased the ticket price!");
+            updateDisplay();
+        }
+
+        // Function to simulate time (upkeep costs and guest income)
+        function simulateTime() {
+            totalMoney += netIncome - upkeepCost;
+            netIncome = -upkeepCost;
+
+            // Simulate guest income based on guest count
+            const guestIncome = guestCount * ticketPrice;
+            totalMoney += guestIncome;
+            netIncome += guestIncome;
+
+            updateDisplay();
+        }
+
+        // Event listeners for the buttons
+        document.getElementById("buildRideButton").addEventListener("click", buildRide);
+        document.getElementById("increaseTicketPriceButton").addEventListener("click", increaseTicketPrice);
+        document.getElementById("decreaseTicketPriceButton").addEventListener("click", decreaseTicketPrice);
+
+        // Set up a time interval for simulating time (upkeep costs and guest income) every 5 seconds
+        setInterval(simulateTime, 5000);
+
+        // Initial display update
+        updateDisplay();
+    </script>
+</body>
+
+</html>
